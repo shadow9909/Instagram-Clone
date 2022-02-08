@@ -42,6 +42,26 @@ function App() {
   const [userId, setUserId] = useState("");
 
   useEffect(() => {
+    setAuthToken(window.localStorage.getItem("authToken"));
+    setAuthTokenType(window.localStorage.getItem("authTokenType"));
+    setUsername(window.localStorage.getItem("username"));
+  }, []);
+
+  useEffect(() => {
+    authToken
+      ? window.localStorage.setItem("authToken", authToken)
+      : window.localStorage.removeItem("authToken");
+
+    authTokenType
+      ? window.localStorage.setItem("authTokenType", authTokenType)
+      : window.localStorage.removeItem("authTokenType");
+
+    username
+      ? window.localStorage.setItem("username", username)
+      : window.localStorage.removeItem("username");
+  }, [authToken, authTokenType]);
+
+  useEffect(() => {
     fetch(BASE_URL + "post/all")
       .then((response) => {
         const json = response.json();
