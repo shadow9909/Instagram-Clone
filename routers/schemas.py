@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
 from enum import Enum
+from typing import List
 
 
 class UserBase(BaseModel):
@@ -36,13 +37,23 @@ class User(BaseModel):
         orm_mode = True
 
 
+class Comment(BaseModel):
+    text: str
+    username: str
+    timestamp: datetime
+
+    class Config:
+        orm_mode = True
+
+
 class PostDisplay(BaseModel):
     id: int
     image_url: str
     image_url_type: str
     caption: str
     timestamp: datetime
-    user: User
+    comments: List[Comment]
+    user: User = None
 
     class Config:
         orm_mode = True
@@ -52,3 +63,10 @@ class UserAuth(BaseModel):
     id: int
     username: str
     email: str
+
+
+class CommentBase(BaseModel):
+    username: str
+    text: str
+    post_id: int
+    timestamp: datetime
