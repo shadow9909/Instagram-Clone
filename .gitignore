@@ -3,3 +3,4 @@ db/__pycache__
 routers/__pycache__
 env
 sql_app.db
+images/
