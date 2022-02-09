@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Modal, makeStyles, Input } from "@material-ui/core";
 
 import Post from "./Post";
+import ImageUpload from "./imageUpload";
 import { mergeClasses } from "@material-ui/styles";
 
 const BASE_URL = "http://localhost:8000/";
@@ -40,6 +41,7 @@ function App() {
   const [authToken, setAuthToken] = useState(null);
   const [authTokenType, setAuthTokenType] = useState(null);
   const [userId, setUserId] = useState("");
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     setAuthToken(window.localStorage.getItem("authToken"));
@@ -85,7 +87,7 @@ function App() {
   }, []);
 
   const signIn = (event) => {
-    event.preventDefault();
+    if (event) event.preventDefault();
     let formData = new FormData();
     formData.append("username", username);
     formData.append("password", password);
@@ -107,11 +109,45 @@ function App() {
         setAuthToken(data.access_token);
         setAuthTokenType(data.token_type);
         setUsername(data.username);
+        setUserId(data.user_id);
       })
       .catch((error) => {
         console.log(error);
       });
     setOpenSignIn(false);
+  };
+
+  const signUp = (event) => {
+    event.preventDefault();
+    let formData = new FormData();
+    formData.append("username", username);
+    formData.append("email", email);
+    formData.append("password", password);
+
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: username,
+        email: email,
+        password: password,
+      }),
+    };
+
+    fetch(BASE_URL + "user", requestOptions)
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw response;
+      })
+      .then((data) => {
+        signIn();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    setOpenSignUp(false);
   };
 
   const signOut = (event) => {
@@ -156,6 +192,48 @@ function App() {
           </form>
         </div>
       </Modal>
+
+      <Modal
+        open={openSignUp}
+        onClose={() => {
+          setOpenSignUp(false);
+        }}
+      >
+        <div style={modalStyle} className={classes.paper}>
+          <form className="app_signin">
+            <center>
+              <img
+                src="https://images.news18.com/ibnlive/uploads/2021/08/instagram-logo-16299676593x2.jpg?impolicy=website&width=510&height=356"
+                alt="Instagram"
+                className="app_headerImage"
+              />
+              <br />
+              <Input
+                placeholder="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              ></Input>
+              <Input
+                placeholder="email"
+                type="text"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              ></Input>
+              <Input
+                placeholder="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              ></Input>
+              <Button type="submit" onClick={signUp}>
+                SignUp
+              </Button>
+            </center>
+          </form>
+        </div>
+      </Modal>
+
       <div className="app_posts">
         <div className="app_header">
           <img
@@ -179,6 +257,17 @@ function App() {
           <Post post={post} key={post.id} />
         ))}
       </div>
+      {authToken ? (
+        <div>
+          <ImageUpload
+            authToken={authToken}
+            authTokenType={authTokenType}
+            userId={userId}
+          ></ImageUpload>
+        </div>
+      ) : (
+        <h3>Login to Upload</h3>
+      )}
     </div>
   );
 }
