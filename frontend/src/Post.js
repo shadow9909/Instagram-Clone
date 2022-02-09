@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Avatar, Button } from "@material-ui/core";
 import "./Post.css";
+import Comments from "./comments";
 
 const BASE_URL = "http://localhost:8000/";
 
-function Post({ post, authTokenType, authToken, userId }) {
+function Post({ post, authTokenType, authToken, userId, username }) {
   const [imageUrl, setImageUrl] = useState("");
   const [comments, setComments] = useState([]);
 
@@ -52,6 +53,14 @@ function Post({ post, authTokenType, authToken, userId }) {
             <strong>{comment.username}: </strong> {comment.text}
           </p>
         ))}
+      </div>
+      <div>
+        <Comments
+          post={post}
+          authToken={authToken}
+          authTokenType={authTokenType}
+          username={username}
+        ></Comments>
       </div>
     </div>
   );

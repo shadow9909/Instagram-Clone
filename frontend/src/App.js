@@ -259,6 +259,7 @@ function App() {
             authToken={authToken}
             authTokenType={authTokenType}
             userId={userId}
+            username={username}
             key={post.id}
           />
         ))}

@@ -69,4 +69,3 @@ class CommentBase(BaseModel):
     username: str
     text: str
     post_id: int
-    timestamp: datetime
