@@ -254,7 +254,13 @@ function App() {
           </div>
         </div>
         {posts.map((post) => (
-          <Post post={post} key={post.id} />
+          <Post
+            post={post}
+            authToken={authToken}
+            authTokenType={authTokenType}
+            userId={userId}
+            key={post.id}
+          />
         ))}
       </div>
       {authToken ? (
